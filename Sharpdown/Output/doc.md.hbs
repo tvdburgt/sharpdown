@@ -1,0 +1,32 @@
+﻿# {{Title}}
+
+{{#each Classes}}
+### {{Class.Node.Identifier}}
+{{#each Class.SummaryLines}}
+{{this}}
+{{/each}}
+```csharp
+{{Class}}
+{
+    {{#each Fields}}
+    {{#each this.SummaryLines}}
+    // {{this}}
+    {{/each}}
+    {{this}}
+    {{/#each}}
+    {{#each Properties}}
+    {{#each this.SummaryLines}}
+    // {{this}}
+    {{/each}}
+    {{this}}
+    {{/#each}}
+    {{#each Methods}}
+    {{#each this.SummaryLines}}
+    // {{this}}
+    {{/each}}
+    {{this}}
+    {{/#each}}
+}
+```
+
+{{/each}}
