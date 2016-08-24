@@ -6,9 +6,10 @@ namespace Sharpdown.Simple
     {
         static void Main(string[] args)
         {
-            using (var writer = File.CreateText("doc.md"))
+            using (var template = File.OpenText(@"doc.md.hbs"))
+            using (var output = File.CreateText(@"doc.md"))
             {
-                Sharpdown.DocumentProjectAsync(@"..\..\..\examples\SimpleCQRS\SimpleCQRS.csproj", writer)
+                Sharpdown.GenerateAsync(@"..\..\..\examples\SimpleCQRS\SimpleCQRS.csproj", template, output)
                     .GetAwaiter().GetResult();
             }
         }

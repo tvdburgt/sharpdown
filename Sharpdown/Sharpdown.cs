@@ -3,6 +3,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.MSBuild;
 using Sharpdown.Output;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,12 +11,23 @@ using System.Threading.Tasks;
 
 namespace Sharpdown
 {
+    public class TemplateData
+    {
+        public string Title { get; set; }
+        public IEnumerable<TypeMetadata> NamedTypes { get; set; }
+    }
+
     public class Sharpdown
     {
-        public static async Task DocumentProjectAsync(string path, TextWriter output)
+        public static async Task GenerateAsync(string projectPath, TextReader template, TextWriter output)
+        {
+            await GenerateAsync(projectPath, template, output, data => data);
+        }
+
+        public static async Task GenerateAsync(string projectPath, TextReader template, TextWriter output, Func<TemplateData, object> processor)
         {
             var ws = MSBuildWorkspace.Create();
-            var project = await ws.OpenProjectAsync(path);
+            var project = await ws.OpenProjectAsync(projectPath);
             var compilation = await project.GetCompilationAsync();
 
             var types = ClassVisitor.GetPublicClassDeclarations(compilation);
@@ -55,16 +67,16 @@ namespace Sharpdown
                     .OrderBy(d => d.Node.Identifier.Value);
             }
 
-            using (var reader = File.OpenText(@"Output\doc.md.hbs"))
+            Handlebars.Configuration.TextEncoder = new NopEncoder();
+            var templator = Handlebars.Compile(template);
+
+            var data = new TemplateData
             {
-                Handlebars.Configuration.TextEncoder = new NopEncoder();
-                var template = Handlebars.Compile(reader);
-                template(output, new
-                {
-                    Title = project.Name,
-                    Classes = classes.OrderBy(x => x.Class.Node.Identifier.Value),
-                });
-            }
+                Title = project.Name,
+                NamedTypes = classes.OrderBy(x => x.Class.Node.Identifier.Value),
+            };
+
+            templator(output, processor(data));
         }
     }
 }

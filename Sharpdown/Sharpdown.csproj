@@ -105,9 +105,6 @@
     <Compile Include="SymbolExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Output\doc.md.hbs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
