@@ -21,9 +21,9 @@ namespace Sharpdown.Output
                     yield break;
                 }
 
-                string line;
                 using (var reader = new StringReader(Summary))
                 {
+                    string line;
                     while ((line = reader.ReadLine()) != null)
                     {
                         yield return line.Trim();

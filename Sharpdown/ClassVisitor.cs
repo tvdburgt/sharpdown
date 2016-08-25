@@ -11,11 +11,10 @@ namespace Sharpdown
 
         public override void VisitClassDeclaration(ClassDeclarationSyntax node)
         {
-            base.VisitClassDeclaration(node);
             classes.Add(node);
         }
 
-        public static IEnumerable<ClassDeclarationSyntax> GetPublicClassDeclarations(Compilation compilation)
+        public static IEnumerable<ClassDeclarationSyntax> GetPublicClasses(Compilation compilation)
         {
             foreach (var tree in compilation.SyntaxTrees)
             {

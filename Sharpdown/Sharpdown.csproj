@@ -95,10 +95,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MemberVisitor.cs" />
     <Compile Include="ClassVisitor.cs" />
     <Compile Include="Output\Declaration.cs" />
     <Compile Include="Output\DeclarationFormatter.cs" />
     <Compile Include="Output\NopEncoder.cs" />
+    <Compile Include="Output\TemplateData.cs" />
     <Compile Include="Output\TypeMetadata.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sharpdown.cs" />

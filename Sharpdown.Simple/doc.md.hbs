@@ -8,19 +8,7 @@
 ```csharp
 {{Class}}
 {
-    {{#each Fields}}
-    {{#each this.SummaryLines}}
-    // {{this}}
-    {{/each}}
-    {{this}}
-    {{/#each}}
-    {{#each Properties}}
-    {{#each this.SummaryLines}}
-    // {{this}}
-    {{/each}}
-    {{this}}
-    {{/#each}}
-    {{#each Methods}}
+    {{#each Members}}
     {{#each this.SummaryLines}}
     // {{this}}
     {{/each}}
