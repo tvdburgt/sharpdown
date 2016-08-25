@@ -1,0 +1,28 @@
+﻿# {{Title}}
+
+## Events
+{{#each Events}}
+{{camelcase}}
+### {{camelcase Class.Identifier.Text}}
+{{Class.Summary}}
+
+Property | Type | Required | Summary
+--- | --- | --- | ---
+{{#each Members}}
+{{camelcase Identifier.Text}} | `{{Node.Declaration.Type}}` | `true` | {{Summary}}
+{{/each}}
+{{/each}}
+
+
+## Commands
+{{#each Commands}}
+{{Class.Summary}}
+
+### {{camelcase Class.Identifier.Text}}
+Property | Type | Required | Summary
+--- | --- | --- | ---
+{{#each Members}}
+{{camelcase Identifier.Text}} | `{{Node.Declaration.Type}}` | `true` | {{Summary}}
+{{/each}}
+{{/each}}
+{{/each}}

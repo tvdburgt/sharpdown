@@ -7,8 +7,10 @@ namespace Sharpdown.Output
 {
     public class Declaration<T> where T : CSharpSyntaxNode
     {
-        public string Value { get; set; }
+        public string Representation { get; set; }
         public string Summary { get; set; }
+
+        public SyntaxToken Identifier { get; set; }
         public T Node { get; set; }
         public ISymbol Symbol { get; set; }
 
@@ -32,21 +34,18 @@ namespace Sharpdown.Output
             }
         }
 
-        public static Declaration<T> FromModel(SemanticModel model, T node, string value)
+        public Declaration(T node, ISymbol symbol, SyntaxToken identifier, string representation)
         {
-            var symbol = model.GetDeclaredSymbol(node);
-            return new Declaration<T>
-            {
-                Node = node,
-                Symbol = symbol,
-                Summary = symbol.GetSummary(),
-                Value = value,
-            };
+            Symbol = symbol;
+            Node = node;
+            Summary = symbol.GetSummary();
+            Representation = representation;
+            Identifier = identifier;
         }
 
         public override string ToString()
         {
-            return Value;
+            return Representation;
         }
     }
 }

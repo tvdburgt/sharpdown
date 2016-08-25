@@ -1,7 +1,7 @@
 ﻿# {{Title}}
 
 {{#each NamedTypes}}
-### {{Class.Node.Identifier}}
+### {{Class.Identifier}}
 {{#each Class.SummaryLines}}
 {{this}}
 {{/each}}
@@ -14,6 +14,9 @@
     {{/each}}
     {{this}}
     {{/#each}}
+    {{#unless Members}}
+    // {{Class.Identifier}} does not contain any public members.
+    {{/unless}}
 }
 ```
 

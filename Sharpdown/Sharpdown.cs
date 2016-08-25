@@ -15,45 +15,69 @@ namespace Sharpdown
     {
         public static async Task GenerateAsync(string projectPath, TextReader template, TextWriter output)
         {
-            await GenerateAsync(projectPath, template, output, data => data);
+            await GenerateAsync(projectPath, template, output, (compilation, data) => data);
         }
 
         public static async Task GenerateAsync(string projectPath, TextReader template, TextWriter output,
-            Func<TemplateData, object> processor)
+            Func<Compilation, TemplateData, object> processor)
         {
             var ws = MSBuildWorkspace.Create();
             var project = await ws.OpenProjectAsync(projectPath);
             var compilation = await project.GetCompilationAsync();
             var types = GetNamedTypes(compilation);
+            var templator = CreateTemplator(template);
 
-            Handlebars.Configuration.TextEncoder = new NopEncoder();
-            var templator = Handlebars.Compile(template);
             var data = new TemplateData
             {
                 Title = project.AssemblyName,
                 NamedTypes = types.OrderBy(x => x.Class.Node.Identifier.Value),
             };
 
-            templator(output, processor(data));
+            templator(output, processor(compilation, data));
         }
 
         private static IEnumerable<TypeMetadata> GetNamedTypes(Compilation compilation)
         {
+            var formatter = new DeclarationFormatter();
             var types = ClassVisitor.GetPublicClasses(compilation);
-
-            var declarationFormatter = new DeclarationFormatter();
 
             foreach (var t in types)
             {
                 var model = compilation.GetSemanticModel(t.SyntaxTree);
-
                 yield return new TypeMetadata
                 {
-                    Class = Declaration<ClassDeclarationSyntax>.FromModel(
-                        model, t, declarationFormatter.GetString(t)),
-                    Members = MemberVisitor.GetPublicMembers(model, t)
+                    Class = new Declaration<ClassDeclarationSyntax>(
+                        t, model.GetDeclaredSymbol(t), t.Identifier, formatter.GetClassString(t)),
+                    Members = MemberVisitor.GetPublicMembers(model, formatter, t)
                 };
             }
+        }
+
+        private static Action<TextWriter, object> CreateTemplator(TextReader template)
+        {
+            Handlebars.RegisterHelper("camelcase", (writer, context, parameters) =>
+            {
+                if (parameters.Length == 0)
+                {
+                    return;
+                }
+
+                writer.WriteSafeString(ConvertToCamelCase(parameters[0] as string));
+            });
+
+            Handlebars.Configuration.TextEncoder = new NopEncoder();
+
+            return Handlebars.Compile(template);
+        }
+
+        private static string ConvertToCamelCase(string s)
+        {
+            if (string.IsNullOrEmpty(s) || s.Length <= 1 || s.All(char.IsUpper))
+            {
+                return s;
+            }
+
+            return char.ToLowerInvariant(s[0]) + s.Substring(1);
         }
     }
 }

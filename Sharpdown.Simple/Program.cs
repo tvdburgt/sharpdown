@@ -6,7 +6,7 @@ namespace Sharpdown.Simple
     {
         static void Main(string[] args)
         {
-            using (var template = File.OpenText(@"doc.md.hbs"))
+            using (var template = File.OpenText(@"doc.hbs"))
             using (var output = File.CreateText(@"doc.md"))
             {
                 Sharpdown.GenerateAsync(@"..\..\..\examples\SimpleCQRS\SimpleCQRS.csproj", template, output)

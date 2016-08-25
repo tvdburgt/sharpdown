@@ -15,8 +15,15 @@ namespace SimpleCQRS
         }
     }
 
+    /// <summary>
+    /// Creates a new inventory item.
+    /// </summary>
     public class InventoryItemCreated : Event {
         public readonly Guid Id;
+
+        /// <summary>
+        /// Informative description of the product you want to create.
+        /// </summary>
         public readonly string Name;
         public InventoryItemCreated(Guid id, string name) {
             Id = id;
@@ -24,6 +31,9 @@ namespace SimpleCQRS
         }
     }
 
+    /// <summary>
+    /// Renames an item in the inventory.
+    /// </summary>
     public class InventoryItemRenamed : Event
     {
         public readonly Guid Id;
